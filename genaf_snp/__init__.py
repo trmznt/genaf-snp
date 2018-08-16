@@ -1,11 +1,11 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 
-from rhombus import init_app
+#from rhombus import init_app
 from rhombus.lib.utils import cerr, cout
 
 # set configuration and dbhandler
-from genaf_base import includeme as genaf_base_includeme
+from genaf_base import includeme as genaf_base_includeme, init_app
 from genaf_snp.scripts import run
 
 # initialize view
@@ -15,6 +15,8 @@ from genaf_snp.views import *
 def includeme( config ):
     """ this configuration must be included as the last order
     """
+
+    print('genaf_snp:', config)
 
     config.include( genaf_base_includeme )
 
