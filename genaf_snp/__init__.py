@@ -3,6 +3,7 @@ from sqlalchemy import engine_from_config
 
 #from rhombus import init_app
 from rhombus.lib.utils import cerr, cout
+from rhombus import init_app as rhombus_init_app, add_route_view, add_route_view_class
 
 # set configuration and dbhandler
 from genaf_base import includeme as genaf_base_includeme, init_app
@@ -38,6 +39,42 @@ def includeme( config ):
 
     # add additional routes and views here
 
+    add_route_view_class( config, 'genaf_snp.views.locus.LocusViewer', 'genaf.locus',
+        '/locus',
+        '/locus/@@action',
+        '/locus/{id}@@edit',
+        '/locus/{id}@@save',
+        ('locus/{id}', 'view')
+
+    )
+
+    add_route_view_class( config, 'genaf_snp.views.panel.PanelViewer', 'genaf.panel',
+        '/panel',
+        '/panel/@@action',
+        '/panel/{id}@@edit',
+        '/panel/{id}@@save',
+        ('/panel/{id}', 'view')
+
+    )
+
+    # analysis part
+    config.add_route('analysis-haplotype', '/tools/haplotype')
+    config.add_view('genaf_snp.views.tools.haplotype.Haplotype', route_name='analysis-haplotype')
+
+    config.add_route('analysis-pi', '/tools/pi')
+    config.add_view('genaf_snp.views.tools.pi.PiAnalysis', route_name='analysis-pi')
+
+    config.add_route('analysis-fst', '/tools/fst')
+    config.add_view('genaf_snp.views.tools.fst.FSTAnalysis', route_name='analysis-fst')
+
+    config.add_route('analysis-pca', '/tools/pca')
+    config.add_view('genaf_snp.views.tools.pca.PCAAnalysis', route_name='analysis-pca')
+
+    config.add_route('analysis-nj', '/tools/nj')
+    config.add_view('genaf_snp.views.tools.nj.NJAnalysis', route_name='analysis-nj')
+
+    config.add_route('analysis-coi', '/tools/coi')
+    config.add_view('genaf_snp.views.tools.coi.COIAnalysis', route_name='analysis-coi')
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
