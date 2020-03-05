@@ -27,6 +27,11 @@ def includeme( config ):
     #config.override_asset('rhombus:templates/base.mako', 'genaf_snp:templates/base.mako')
     #config.override_asset('rhombus:templates/plainbase.mako', 'genaf_snp:templates/plainbase.mako')
 
+    # add extension
+    from genaf_base.views.sample import SampleViewer
+    from genaf_snp.views.sample import SNPSampleExtensionViewer
+    SampleViewer.set_extension_viewer(SNPSampleExtensionViewer)
+
     # add route and view for home ('/'), /login and /logout
     #config.add_route('home', '/')
     #config.add_view('genaf_snp.views.home.index', route_name='home')
