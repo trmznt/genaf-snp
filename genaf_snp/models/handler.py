@@ -26,7 +26,15 @@ class DBHandler(get_dbhandler_class(), base_sqlhandler):
     # add additional methods here
 
     def get_loci(self, ids=None):
+        """ return loci
+        """
         return self.Locus.query(self.session()).order_by(self.Locus.refseq, self.Locus.position).all()
+
+    def get_locus(self, ref, pos):
+        """ return locus """
+        cerr('[%s %d]' % (ref, pos))
+        return self.Locus.query(self.session()).filter(self.Locus.refseq == ref, self.Locus.position == pos).one()
+
 
     def get_panels(self, ids=None):
         return self.Panel.query(self.session()).order_by(self.Panel.code).all()
