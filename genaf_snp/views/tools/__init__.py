@@ -14,7 +14,9 @@ class SNPAnalyticViewer(AnalyticViewer):
     def parse_form(self, params):
 
         d = super().parse_form(params)
-
+        d['genotype_calling'] = params.get('genaf-query.genotype_calling', 'H')
+        d['allele_threshold'] = float(params.get('genaf-query.allele_threshold', 0.9))
+        d['snp_threshold'] = float(params.get('genaf-query.snp_threshold', 0.9))
 
         return d
 
@@ -32,7 +34,7 @@ class SNPAnalyticViewer(AnalyticViewer):
                 multiple=True,
             ),
 
-            input_select('genaf-query.calling',  'Genotype calling', offset=2, size=3,
+            input_select('genaf-query.genotype_calling',  'Genotype calling', offset=2, size=3,
                 value='H',
                 options = [
                                 ('H', 'Heterozygote calls'),
@@ -47,9 +49,9 @@ class SNPAnalyticViewer(AnalyticViewer):
                 value=5,
             ),
 
-            input_text('genaf-query.SNP_cutoff', 'SNP quality cutoff',
+            input_text('genaf-query.snp_threshold', 'SNP quality threshold',
                 offset=2, size=3,
-                value=0.5,
+                value=0.9,
             ),
         )
 
