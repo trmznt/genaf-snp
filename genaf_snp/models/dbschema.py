@@ -21,7 +21,14 @@ class SNPSample(get_dbhandler_class().Sample, SampleMixIn):
 
     __mapper_args__ = { 'polymorphic_identity': 1 }
 
-
+# Panel <-> Locus relationship
+locus_panel_table = Table('locus_panels', metadata,
+    Column('id', types.Integer, Sequence('locus_panel_sequence', optional=True),
+        primary_key=True),
+    Column('locus_id', types.Integer, ForeignKey('locuses.id'), nullable=False),
+    Column('panel_id', types.Integer, ForeignKey('panels.id'), nullable=False),
+    UniqueConstraint( 'locus_id', 'panel_id')
+)
 
 class Locus(BaseMixIn, Base, LocusMixIn):
 
@@ -58,15 +65,7 @@ class Panel(BaseMixIn, Base, PanelMixIn):
     flags = Column(types.Integer, nullable=False, server_default='0')
     remark = Column(types.String(1024), nullable=False, server_default='')
 
-
-# Panel <-> Locus relationship
-locus_panel_table = Table('locus_panels', metadata,
-    Column('id', types.Integer, Sequence('locus_panel_sequence', optional=True),
-        primary_key=True),
-    Column('locus_id', types.Integer, ForeignKey('locuses.id'), nullable=False),
-    Column('panel_id', types.Integer, ForeignKey('panels.id'), nullable=False),
-    UniqueConstraint( 'locus_id', 'panel_id')
-)
+    loci = relationship(Locus, secondary=locus_panel_table, order_by = [Locus.refseq, Locus.position])
 
 
 class Genotype(BaseMixIn, Base, GenotypeMixIn):
