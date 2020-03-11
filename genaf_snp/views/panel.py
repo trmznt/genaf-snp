@@ -18,7 +18,10 @@ class PanelViewer(object):
 
         panels = self.dbh.get_panels()
 
-        html, code = generate_panel_table(panels, self.request)
+        html = div()[ h2('Panels') ]
+
+        table, code = generate_panel_table(panels, self.request)
+        html.add( table )
 
         return render_to_response('genaf_base:templates/generics/page.mako',
             {   'content': str(html),
@@ -29,3 +32,35 @@ class PanelViewer(object):
     def view(self):
 
     	pass
+
+def generate_panel_table(panels, request):
+
+    table_body = tbody()
+
+    not_guest = not request.user.has_roles( GUEST )
+
+    for panel in panels:
+        table_body.add(
+            tr(
+                td(literal('<input type="checkbox" name="panel-ids" value="%d" />' % panel.id)
+                    if not_guest else ''),
+                td( a(panel.code) ),
+                td( len(panel.loci) ),
+            )
+        )
+
+    panel_table = table(class_='table table-condensed table-striped')[
+        thead(
+            tr(
+                th('', style="width: 2em"),
+                th('Code'),
+                th('N SNPs')
+            )
+        )
+    ]
+
+    panel_table.add( table_body )
+    html = div(panel_table)
+    code = ''
+
+    return html, code
