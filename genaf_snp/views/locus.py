@@ -18,7 +18,10 @@ class LocusViewer(object):
 
         loci = self.dbh.get_loci()
 
-        html, code = generate_locus_table(loci, self.request)
+        html = div()[ h2('Loci') ]
+
+        table, code = generate_locus_table(loci, self.request)
+        html.add(table)
 
         return render_to_response('genaf_base:templates/generics/page.mako',
             {   'content': str(html),
