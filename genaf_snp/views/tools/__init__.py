@@ -14,6 +14,7 @@ class SNPAnalyticViewer(AnalyticViewer):
     def parse_form(self, params):
 
         d = super().parse_form(params)
+        d['panel_ids'] = [int(x) for x in params.getall('genaf-query.panel_ids')]
         d['genotype_calling'] = params.get('genaf-query.genotype_calling', 'H')
         d['allele_threshold'] = float(params.get('genaf-query.allele_threshold', 0.9))
         d['snp_threshold'] = float(params.get('genaf-query.snp_threshold', 0.9))
@@ -56,3 +57,16 @@ class SNPAnalyticViewer(AnalyticViewer):
         )
 
         return qform, jscode
+
+
+    def params2specs(self, params, groups_id=None):
+
+        specs = super().params2specs(params, groups_id)
+        specs['filter'] = {
+            'marker_qual_threshold': params.get('snp_threshold', 0.9),
+            'sample_qual_threshold': 0.9,
+            'abs_threshold': params.get('allele_threshold', 5),
+            'panel_ids': params.get('panel_ids', None)
+        }
+
+        return specs
