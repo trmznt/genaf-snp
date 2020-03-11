@@ -30,7 +30,10 @@ class DBHandler(get_dbhandler_class(), base_sqlhandler):
         """
         return self.Locus.query(self.session()).order_by(self.Locus.refseq, self.Locus.position).all()
 
-    def get_locus(self, ref, pos):
+    def get_locus_by_code(self, code):
+        return self.Locus.query(self.session()).filter(self.Locus.code == code).one()
+
+    def get_locus_by_pos(self, ref, pos):
         """ return locus """
         cerr('[%s %d]' % (ref, pos))
         return self.Locus.query(self.session()).filter(self.Locus.refseq == ref, self.Locus.position == pos).one()
