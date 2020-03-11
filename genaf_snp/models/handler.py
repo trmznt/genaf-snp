@@ -37,4 +37,16 @@ class DBHandler(get_dbhandler_class(), base_sqlhandler):
 
 
     def get_panels(self, ids=None):
-        return self.Panel.query(self.session()).order_by(self.Panel.code).all()
+        """ return all available panels """
+        q = self.Panel.query(self.session()).order_by(self.Panel.code)
+        if ids:
+            q = q.filter(self.Panel.id.in_( ids ))
+        return q.all()
+
+    def get_locus_ids_from_panel_ids(self, panel_ids=None):
+        """ return a set of marker ids from panel ids """
+        panels = self.get_panels( panel_ids )
+        locus_ids = set()
+        for p in panels:
+            locus_ids.update( [l.id for l in p.loci] )
+        return locus_ids
