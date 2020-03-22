@@ -44,32 +44,6 @@ def do_pca(query, userinstance, ns, *args, **kwargs): #q, user, ns=None):
 
     return True
 
-    D = dist.simple_distance(variant_df)
-
-    DM = dist.DistanceMatrix(None)
-    DM.M = D[0]
-
-
-
-    fso_dir = get_fso_temp_dir(userinstance.login)
-
-    axis = [ (0, 39), (40, 59), (60, 71), (72, 85), (86, 125), (126, 131) ]
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    pca_matrix = res[0]
-    pca_var = res[1]
-
-    for (i1, i2) in axis:
-        ax.scatter( pca_matrix[i1:i2, 0], pca_matrix[i1:i2, 1] )
-    
-    plotfile = fso_dir.abspath + '/pcoa.png'
-    fig.savefig(plotfile)
-    ns.result= { 'plot_url': fso.get_urlpath(plotfile) }
-
-    return True
-
 
 class PCAAnalysis(SNPAnalyticViewer):
 
