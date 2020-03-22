@@ -63,6 +63,10 @@ def includeme( config ):
     )
 
     # analysis part
+
+    config.add_route('analysis-allele', '/tools/allele')
+    config.add_view('genaf_snp.views.tools.allele.AlleleAnalysis', route_name='analysis-allele')
+
     config.add_route('analysis-haplotype', '/tools/haplotype')
     config.add_view('genaf_snp.views.tools.haplotype.Haplotype', route_name='analysis-haplotype')
 
@@ -80,6 +84,9 @@ def includeme( config ):
 
     config.add_route('analysis-coi', '/tools/coi')
     config.add_view('genaf_snp.views.tools.coi.COIAnalysis', route_name='analysis-coi')
+
+    config.add_route('analysis-ld', '/tools/ld')
+    config.add_view('genaf_snp.views.tools.ld.LDAnalysis', route_name='analysis-ld')
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
