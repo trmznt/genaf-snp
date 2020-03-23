@@ -1,19 +1,40 @@
 
-from genaf_snp.views.tools import ToolViewer
+from genaf_snp.views.tools import *
 
 
-class AlleleTool(ToolViewer):
+def do_allele_analysis(query, userinstance, ns, *args, **kwargs):
 
-	def get_form(self):
+	analytical_sets = query.get_filtered_analytical_sets()
 
-		form = super().get_form()
+	allele_freqs = []
 
-		return form
+	for analytical_set in analytical_sets:
 
-	def process(self):
-		pass
+			transposed_variant_df = analytical_set.variant_df.transpose()
 
-	def format_result(self):
-		pass
+			allele_freqs.append(
+
+				( analytical_set,
+					[ l.value_counts() for l in transposed_variant_df.item()] )
+			)
+
+	raise RuntimeError()
+
+	return True
+
+class AlleleAnalysis(SNPAnalyticViewer):
+
+
+	title = 'Allele Frequency Summary'
+	info = ''
+
+	callback = do_allele_analysis
+
+	def format_result(self, result):
+
+		html = div()
+		html.add( div(self.title) )
+
+		return html, ''
 
 
