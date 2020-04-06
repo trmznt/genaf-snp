@@ -3,9 +3,7 @@ from rhombus.lib import fsoverlay as fso
 from spatools.lib.analytics import dist
 from spatools.lib.analytics.nj import plot_nj
 
-def do_pca(query, userinstance, ns, *args, **kwargs): #q, user, ns=None):
-
-
+def do_nj(query, userinstance, ns, *args, **kwargs): #q, user, ns=None):
 
     dbh = get_dbhandler()
     analytical_sets = query.get_filtered_analytical_sets()
@@ -15,7 +13,7 @@ def do_pca(query, userinstance, ns, *args, **kwargs): #q, user, ns=None):
     dbh = query.dbh
     fso_dir = get_fso_temp_dir(userinstance.login)
 
-    tip_label = '-' #query.options.get('tip_label', 'S')
+    tip_label = query.specs['options'].get('tip_label', 'S')
     label_callback = {
         'S': lambda x: dbh.get_sample_by_id(x).code,
         'I': None,
@@ -27,7 +25,9 @@ def do_pca(query, userinstance, ns, *args, **kwargs): #q, user, ns=None):
         '-': lambda x: '-',
     }
 
-    tree_type = { 'F': 'fan', 'R': 'radial', 'U': 'unrooted', 'P': 'phylogram'}['U'] #[query.options.get('tree_type', 'F')]
+    tree_type = {
+            'F': 'fan', 'R': 'radial', 'U': 'unrooted', 'P': 'phylogram'
+        }[query.specs['options'].get('tree_type', 'F')]
     branch_coloring = True #query.options.get('branch_coloring', 'Y') == 'Y'
 
     njplot_png = plot_nj(dm, fso_dir.abspath, 'png',
@@ -46,8 +46,53 @@ class NJAnalysis(SNPAnalyticViewer):
     title = 'Neigbor-Joining Tree Analysis'
     info = ''
 
-    callback = do_pca
+    callback = do_nj
 
+    def get_form(self, jscode="", params={}):
+
+        qform, jscode = super().get_form( jscode="", params={} )
+        qform.get('genaf-query.custom-options').add(
+
+            input_select('genaf-query.tree_type', 'Tree type', offset=2, size=3,
+                value='U',
+                options = [
+                        ('U', 'unrooted'),
+                        ('R', 'radial'),
+                        ('F', 'fan'),
+                        ('P', 'phylogram'),
+                ],
+                multiple=False,
+                ),
+
+            input_select('genaf-query.tip_label', 'Tip label', offset=2, size=3,
+                value='I',
+                options = [
+                        ('I', 'No tip label'),
+                        ('S', 'Sample code'),
+                        ('C', 'Country'),
+                        ('1', 'Level 1 administration'),
+                        ('2', 'Level 2 administration'),
+                        ('3', 'Level 3 administration'),
+                        ('4', 'Level 4 administration'),
+                        ('-', 'Character -'),
+                ],
+                multiple=False,
+                ),
+        )
+
+        return qform, jscode
+
+    def parse_form(self, params):
+        d = super().parse_form(params)
+        d['tree_type'] = params.get('genaf-query.tree_type', 'U')
+        d['tip_label'] = params.get('genaf-query.tip_label', 'I')
+        return d
+
+    def params2specs(self, params, groups_id=None):
+        specs = super().params2specs(params, groups_id=None)
+        specs['options']['tree_type'] = params['tree_type']
+        specs['options']['tip_label'] = params['tip_label']
+        return specs
 
     def format_result(self, result):
 
