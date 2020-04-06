@@ -31,10 +31,12 @@ def do_pca(query, userinstance, ns, *args, **kwargs): #q, user, ns=None):
         plotfile = fso_dir.abspath + '/' + 'pcoa-%d-%d' % (ax, ay)
         plot_png = ca.plot_pca(pca_res, dm, ax, ay, plotfile + '.png',
                 query.specs['options']['symbol'],
-                query.specs['options']['symbol_size'])
+                query.specs['options']['symbol_size'],
+                query.specs['options']['symbol_alpha'])
         plot_pdf = ca.plot_pca(pca_res, dm, ax, ay, plotfile + '.pdf',
                 query.specs['options']['symbol'],
-                query.specs['options']['symbol_size'])
+                query.specs['options']['symbol_size'],
+                query.specs['options']['symbol_alpha'])
         plotfile_urls.append( (fso.get_urlpath(plot_png), fso.get_urlpath(plot_pdf)) )
 
     pca_data = ca.format_data(pca_res, dm)
@@ -72,6 +74,10 @@ class PCAAnalysis(SNPAnalyticViewer):
             input_text('genaf-query.symbol_size', 'Size', offset=2, size=3,
                 value=30
                 ),
+
+            input_text('genaf-query.symbol_alpha', 'Alpha transparency', offset=2, size=3,
+                value=0.75
+                ),
         )
         return qform, jscode
 
@@ -80,6 +86,7 @@ class PCAAnalysis(SNPAnalyticViewer):
         d = super().parse_form(params)
         d['symbol'] = params.get('genaf-query.symbol', '+')
         d['symbol_size'] = int(params.get('genaf-query.symbol_size', 30))
+        d['symbol_alpha'] = float(params.get('genaf-query.symbol_alpha', 0.75))
         return d
 
 
@@ -87,6 +94,7 @@ class PCAAnalysis(SNPAnalyticViewer):
         specs = super().params2specs(params, groups_id=None)
         specs['options']['symbol'] = params['symbol']
         specs['options']['symbol_size'] = params['symbol_size']
+        specs['options']['symbol_alpha'] = params['symbol_alpha']
         return specs
 
 
