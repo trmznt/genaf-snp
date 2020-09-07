@@ -64,6 +64,9 @@ def includeme( config ):
 
     # analysis part
 
+    config.add_route('analysis', '/analysis')
+    config.add_view('genaf_snp.views.tools.index.index', route_name = 'analysis')
+
     config.add_route('analysis-allele', '/tools/allele')
     config.add_view('genaf_snp.views.tools.allele.AlleleAnalysis', route_name='analysis-allele')
 
