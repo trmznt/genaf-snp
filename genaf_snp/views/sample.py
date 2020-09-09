@@ -15,10 +15,10 @@ class SNPSampleExtensionViewer(object):
 
         table_body = tbody()
 
-        genotypes = sorted([ (g.locus.refseq, g.locus.position, g.A, g.C, g.G, g.T) for g in self.sample.genotypes ])
-        for (r,p,a,c,g,t) in genotypes:
+        genotypes = sorted([ (g.locus.refseq, g.locus.position, g.A, g.C, g.G, g.T, g.id) for g in self.sample.genotypes ])
+        for (r,p,a,c,g,t,idx) in genotypes:
             table_body.add(
-                tr( td(r), td(p), td(a), td(c), td(g), td(t),
+                tr( td(r), td(p), td(int(a)), td(int(c)), td(int(g)), td(int(t)),
                 )
             )
 
